@@ -6,40 +6,17 @@ export default function Home() {
   const [desc, setDesc] = useState("");
   const [main, setMain] = useState([]);
 
-  // Fetch tasks from API
-  useEffect(() => {
-    fetch("/api/tasks")
-      .then((response) => response.json())
-      .then((data) => setMain(data.data));
-  }, []);
-
-  const submitHandler = async (e) => {
+  const submitHandler = (e) => {
     e.preventDefault();
-
-    const response = await fetch("/api/tasks", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title, desc }),
-    });
-
-    const data = await response.json();
-    setMain([...main, data.data]);
+    setMain([...main,{title,desc}]);
     setTitle("");
     setDesc("");
   };
 
-  const deleteHandler = async (id) => {
-    await fetch("/api/tasks", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id }),
-    });
-
-    setMain(main.filter((task) => task._id !== id));
+  const deleteHandler = (i) => {
+    let copy = [...main]
+    copy.splice(i,1)
+    setMain(copy);
   };
 
   let renderTask = <h2>No Available Task</h2>;
@@ -52,7 +29,7 @@ export default function Home() {
             <h6 className="text-lg font-semibold">{t.desc}</h6>
           </div>
           <button
-            onClick={() => deleteHandler(t._id)}
+            onClick={() => deleteHandler(i)}
             className="bg-red-400 text-white rounded px-4 py-2 font-semibold"
           >
             Delete
